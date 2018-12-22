@@ -39,13 +39,14 @@
     <div id='testui' style='margin-left: 5%'>
       <h2 style="text-align: left">API Tests:</h2>
       <h3>Submit issue on <i>apitest</i></h3>
-      <form id="testForm" class="border">
+      <form id="testForm" class="border" action="/api/issues/apitest" method="post">
         <input type="text" name="issue_title" placeholder="*Title" style="width: 100px" required=''><br>
         <textarea type="text" name="issue_text" placeholder="*Text" style="width: 100px" required=''></textarea><br>
         <input type="text" name="created_by" placeholder="*Created by" style="width: 100px" required=''><br>
         <input type="text" name="assigned_to" placeholder="(opt)Assigned to" style="width: 100px"><br>
         <input type="text" name="status_text" placeholder="(opt)Status text" style="width: 100px"><br>
-        <button type="submit">Submit Issue</button>
+        <input type="submit" value="Submit">
+        <!-- <button type="submit">Submit Issue</button> -->
       </form><br>
       <h3>Update issue on <i>apitest</i> (Change any or all to update issue on the _id supplied)</h3>
       <form id="testForm2" class="border">
@@ -67,7 +68,7 @@
     </div>
     <hr style='margin: 50px; margin-top: 200px'>
     <!-- Your web-app is https, so your scripts need to be too -->
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
+    <!-- <script src="https://code.jquery.com/jquery-2.2.1.min.js"
             integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
             crossorigin="anonymous"></script>
     <script>
@@ -106,6 +107,6 @@
           e.preventDefault();
         });
       });
-   </script>
+   </script> -->
   </body>
 </html>
