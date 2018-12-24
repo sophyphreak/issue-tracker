@@ -28,7 +28,6 @@ module.exports = app => {
 
     .post(async (req, res) => {
       try {
-        // console.log('asfsd')
         const project = req.params.project;
         let body = _.pick(req.body, [
           'issue_title',
@@ -44,14 +43,27 @@ module.exports = app => {
         const issue = new Issue(body);
         const doc = await issue.save();
         res.send(doc);
-        // console.log('asdlfkjsad')
       } catch (e) {
         res.status(400).send(e);
       }
     })
 
     .put(function(req, res) {
-      var project = req.params.project;
+      try {
+        const project = req.params.project;
+        let body = _.pick(req.body, [
+          '_id',
+          'issue_title',
+          'issue_text',
+          'created_by',
+          'assigned_to',
+          'status_text',
+          'created_on',
+          'open'
+        ]);
+      } catch (e) {
+        res.status(400).send(3);
+      }
     })
 
     .delete(function(req, res) {
