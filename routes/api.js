@@ -73,19 +73,14 @@ module.exports = app => {
         if (isUpdateEmpty(body)) {
           res.send('no updated field sent');
         }
-        let issue = await Issue.findByIdAndUpdate(
-          body._id,
-          body,
-          { new: true },
-          (err, issue) => {
-            if (err) return res.status(500).send(err);
-            return res.send(issue);
-          }
-        );
+        let issue = await Issue.findByIdAndUpdate(body._id, body, {
+          new: true
+        });
         if (issue === null) {
-          res.send('could not update' + body._id);
+          res.send(`could not update${body._id}`);
+        } else {
+          res.send(issue);
         }
-        res.send(issue);
       } catch (e) {
         res.status(400).send(3);
       }

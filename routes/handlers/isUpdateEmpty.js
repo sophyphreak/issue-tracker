@@ -1,13 +1,12 @@
 const isUpdateEmpty = issue => {
-  const issueLength = Object.keys(issue).length;
-  let emptyStringCounter = 0;
+  let howManyProperties = 0;
   for (let property in issue) {
-    if (!issue[property]) {
-      emptyStringCounter++;
+    if (issue[property]) {
+      howManyProperties++;
     }
   }
-  if (emptyStringCounter >= issueLength - 1) {
-    // -1 because _id should always have a value
+  if (howManyProperties <= 3) {
+    // 3 because _id, updated_on, and project should always have a value
     return true;
   }
   return false;
