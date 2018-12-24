@@ -21,7 +21,11 @@ module.exports = app => {
     .get(async (req, res) => {
       try {
         const project = req.params.project;
-        const issueList = await Issue.find({ project });
+        const queries = req.query;
+        const issueList = await Issue.find({
+          project,
+          ...queries
+        });
         res.send(issueList);
       } catch (e) {
         res.status(400).send(e);
