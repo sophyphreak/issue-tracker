@@ -15,6 +15,7 @@ const moment = require('moment');
 const { mongoose } = require('../db/mongoose');
 const _ = require('lodash');
 const { Issue } = require('../models/issue');
+const isUpdateEmpty = require('./handlers/isUpdateEmpty.js');
 
 // const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
 
@@ -22,8 +23,14 @@ module.exports = app => {
   app
     .route('/api/issues/:project')
 
-    .get(function(req, res) {
-      var project = req.params.project;
+    .get(async (req, res) => {
+      try {
+        const project = req.params.project;
+        const issueList = await Issue.find({ project });
+        res.send(issueList);
+      } catch (e) {
+        res.status(400).send(e);
+      }
     })
 
     .post(async (req, res) => {
@@ -48,7 +55,7 @@ module.exports = app => {
       }
     })
 
-    .put(function(req, res) {
+    .put(async (req, res) => {
       try {
         const project = req.params.project;
         let body = _.pick(req.body, [
@@ -61,6 +68,24 @@ module.exports = app => {
           'created_on',
           'open'
         ]);
+        body.project = project;
+        body.updated_on = moment();
+        if (isUpdateEmpty(body)) {
+          res.send('no updated field sent');
+        }
+        let issue = await Issue.findByIdAndUpdate(
+          body._id,
+          body,
+          { new: true },
+          (err, issue) => {
+            if (err) return res.status(500).send(err);
+            return res.send(issue);
+          }
+        );
+        if (issue === null) {
+          res.send('could not update' + body._id);
+        }
+        res.send(issue);
       } catch (e) {
         res.status(400).send(3);
       }
