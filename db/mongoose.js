@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 if (process.env.NODE_ENV === 'test') {
-  mongoose.connect(`mongodb://localhost:43634/IssueTrackerTest`);
+  mongoose.connect(`mongodb://localhost:27017/IssueTrackerTest`);
 } else {
   mongoose.connect(
     `mongodb://${process.env.DB_USER}:${
