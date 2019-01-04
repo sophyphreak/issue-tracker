@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "mocha --ui tdd tests/2_functional-tests.js"
+    "test": "NODE_ENV=test mocha --ui tdd tests/2_functional-tests.js"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
