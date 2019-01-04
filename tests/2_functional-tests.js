@@ -115,7 +115,6 @@ suite('Functional Tests', () => {
         open: true
       });
       issue.save((err, issue) => {
-        console.log(err);
         chai
           .request(server)
           .put('/api/issues/test')
@@ -135,40 +134,74 @@ suite('Functional Tests', () => {
     });
 
     test('One field to update', done => {
-      test('No body', done => {
-        const issue = new Issue({
-          issue_title: 'PUT Test 2',
-          issue_text: 'text',
-          created_by: 'Functional Test - Every field filled in',
-          assigned_to: 'Chai and Mocha',
-          status_text: 'In QA',
-          project: test,
-          created_on: moment(),
-          updated_on: moment(),
-          open: true
-        });
-        issue.save((err, issue) => {
-          console.log(err);
-          chai
-            .request(server)
-            .put('/api/issues/test')
-            .send({
-              _id: issue.id,
-              issue_text: 'NEW NEW NEW MESSAGE TEXT'
-            })
-            .end((err, res) => {
-              try {
-                assert.equal(res.status, 200);
-                assert.equal(res.body.issue_text, 'NEW NEW NEW MESSAGE TEXT');
-                done();
-              } catch (e) {
-                done(e);
-              }
-            });
-        });
+      const issue = new Issue({
+        issue_title: 'PUT Test 2',
+        issue_text: 'text',
+        created_by: 'Functional Test - Every field filled in',
+        assigned_to: 'Chai and Mocha',
+        status_text: 'In QA',
+        project: test,
+        created_on: moment(),
+        updated_on: moment(),
+        open: true
+      });
+      issue.save((err, issue) => {
+        chai
+          .request(server)
+          .put('/api/issues/test')
+          .send({
+            _id: issue.id,
+            issue_text: 'NEW NEW NEW MESSAGE TEXT'
+          })
+          .end((err, res) => {
+            try {
+              assert.equal(res.status, 200);
+              assert.equal(res.body.issue_text, 'NEW NEW NEW MESSAGE TEXT');
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
       });
     });
-    test('Multiple fields to update', function(done) {});
+    test('Multiple fields to update', function(done) {
+      const issue = new Issue({
+        issue_title: 'PUT Test 3',
+        issue_text: 'text',
+        created_by: 'Functional Test - Every field filled in',
+        assigned_to: 'Chai and Mocha',
+        status_text: 'In QA',
+        project: test,
+        created_on: moment(),
+        updated_on: moment(),
+        open: true
+      });
+      issue.save((err, issue) => {
+        chai
+          .request(server)
+          .put('/api/issues/test')
+          .send({
+            _id: issue.id,
+            issue_title: 'PUT TESTS FINSIHEDDDD NOW',
+            issue_text: 'NEW NEW NEW NEW NEW NEW MESSAGE TEXT',
+            created_by: 'me me me me '
+          })
+          .end((err, res) => {
+            try {
+              assert.equal(res.status, 200);
+              assert.equal(res.body.issue_title, 'PUT TESTS FINSIHEDDDD NOW');
+              assert.equal(
+                res.body.issue_text,
+                'NEW NEW NEW NEW NEW NEW MESSAGE TEXT'
+              );
+              assert.equal(res.body.created_by, 'me me me me');
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
+      });
+    });
   });
 
   suite(
