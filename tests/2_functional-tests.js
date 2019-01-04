@@ -16,14 +16,6 @@ const moment = require('moment');
 
 chai.use(chaiHttp);
 
-describe('Clearing database', () => {
-  beforeEach(done => {
-    Issue.remove({}, err => {
-      done();
-    });
-  });
-});
-
 suite('Functional Tests', () => {
   suite('POST /api/issues/{project} => object with issue data', () => {
     test('Every field filled in', done => {
@@ -211,7 +203,6 @@ suite('Functional Tests', () => {
         chai
           .request(server)
           .get('/api/issues/test')
-          .query({})
           .end(function(err, res) {
             assert.equal(res.status, 200);
             assert.isArray(res.body);
@@ -228,15 +219,105 @@ suite('Functional Tests', () => {
           });
       });
 
-      test('One filter', function(done) {});
+      test('One filter', function(done) {
+        chai
+          .request(server)
+          .get('/api/issues/test?open=true')
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.isArray(res.body);
+            assert.property(res.body[0], 'issue_title');
+            assert.property(res.body[0], 'issue_text');
+            assert.property(res.body[0], 'created_on');
+            assert.property(res.body[0], 'updated_on');
+            assert.property(res.body[0], 'created_by');
+            assert.property(res.body[0], 'assigned_to');
+            assert.property(res.body[0], 'open');
+            assert.property(res.body[0], 'status_text');
+            assert.property(res.body[0], '_id');
+            done();
+          });
+      });
 
-      test('Multiple filters (test for multiple fields you know will be in the db for a return)', function(done) {});
+      test('Multiple filters (test for multiple fields you know will be in the db for a return)', function(done) {
+        chai
+          .request(server)
+          .get('/api/issues/test?open=true&created_by=me me me me')
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.isArray(res.body);
+            assert.property(res.body[0], 'issue_title');
+            assert.property(res.body[0], 'issue_text');
+            assert.property(res.body[0], 'created_on');
+            assert.property(res.body[0], 'updated_on');
+            assert.property(res.body[0], 'created_by');
+            assert.property(res.body[0], 'assigned_to');
+            assert.property(res.body[0], 'open');
+            assert.property(res.body[0], 'status_text');
+            assert.property(res.body[0], '_id');
+            done();
+          });
+      });
     }
   );
 
   suite('DELETE /api/issues/{project} => text', function() {
-    test('No _id', function(done) {});
+    test('No _id', done => {
+      const issue = new Issue({
+        issue_title: 'DELETE Test',
+        issue_text: 'this should not be here',
+        created_by: 'if im here that bad',
+        assigned_to: 'very bad',
+        status_text: 'bad bad bad',
+        project: test,
+        created_on: moment(),
+        updated_on: moment(),
+        open: true
+      });
+      issue.save((err, issue) => {
+        chai
+          .request(server)
+          .delete('/api/issues/test')
+          .end((err, res) => {
+            try {
+              assert.equal(res.text, '_id error');
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
+      });
+    });
 
-    test('Valid _id', function(done) {});
+    test('Valid _id', function(done) {
+      const issue = new Issue({
+        issue_title: 'DELETE Test',
+        issue_text: 'this should not be here',
+        created_by: 'if im here that bad',
+        assigned_to: 'very bad',
+        status_text: 'bad bad bad',
+        project: test,
+        created_on: moment(),
+        updated_on: moment(),
+        open: true
+      });
+      issue.save((err, issue) => {
+        chai
+          .request(server)
+          .delete('/api/issues/test/')
+          .send({
+            _id: issue.id
+          })
+          .end((err, res) => {
+            try {
+              // assert.equal(res.status, 200);
+              assert.equal(res.text, `deleted ${issue.id}`);
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
+      });
+    });
   });
 });
