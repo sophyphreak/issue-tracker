@@ -16,6 +16,14 @@ const moment = require('moment');
 
 chai.use(chaiHttp);
 
+describe('Issues', () => {
+  beforeEach(done => {
+    Issue.remove({}, err => {
+      done();
+    });
+  });
+});
+
 suite('Functional Tests', () => {
   suite('POST /api/issues/{project} => object with issue data', () => {
     test('Every field filled in', done => {
