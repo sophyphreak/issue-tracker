@@ -16,7 +16,7 @@ const moment = require('moment');
 
 chai.use(chaiHttp);
 
-describe('Issues', () => {
+describe('Clearing database', () => {
   beforeEach(done => {
     Issue.remove({}, err => {
       done();
