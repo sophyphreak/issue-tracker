@@ -86,14 +86,18 @@ module.exports = app => {
     })
 
     .delete(async (req, res) => {
-      let project = req.params.project;
-      let body = _.pick(req.body, ['_id']);
-      if (!body._id) res.send('_id error');
-      const found = await Issue.findByIdAndDelete(body._id);
-      if (found) {
-        res.send(`deleted ${body._id}`);
-      } else {
-        res.send(`could not delete ${body._id}`);
+      try {
+        let project = req.params.project;
+        let body = _.pick(req.body, ['_id']);
+        if (!body._id) res.send('_id error');
+        const found = await Issue.findByIdAndDelete(body._id);
+        if (found) {
+          res.send(`deleted ${body._id}`);
+        } else {
+          res.send(`could not delete ${body._id}`);
+        }
+      } catch (e) {
+        res.status(400).send(e);
       }
     });
 };
